@@ -16,7 +16,10 @@ export const users = pgTable("users", {
   name: text("name").notNull(),
   imageUrl: text("image_url"),
   createdAt: timestamp("created_at", { mode: "date" }).defaultNow().notNull(),
-  updatedAt: timestamp("updated_at", { mode: "date" }).defaultNow().notNull(),
+  updatedAt: timestamp("updated_at", { mode: "date" })
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
 });
 
 export const rounds = pgTable("rounds", {
@@ -246,4 +249,7 @@ export type CourseHoles = typeof courseHoles.$inferSelect;
 export type NewCourseHoles = typeof courseHoles.$inferInsert;
 
 export type TeeSet = typeof teeSets.$inferSelect;
-export type TeeSetHoles = typeof teeSets.$inferInsert;
+export type NewTeeSet = typeof teeSets.$inferInsert;
+
+export type TeeSetHoles = typeof teeSetHoles.$inferSelect;
+export type NewTeeSetHoles = typeof teeSetHoles.$inferInsert;
