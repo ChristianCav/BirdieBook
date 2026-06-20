@@ -13,14 +13,15 @@ import userRoutes from "./routes/userRoutes";
 
 const app = express();
 
-app.use(cors({ origin: "http://localhost:5173" }));
+app.use(
+  cors({
+    origin: ENV.FRONTEND_URL || "http://localhost:5173",
+    credentials: true,
+  }),
+);
 app.use(clerkMiddleware());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-app.get("/", (req, res) => {
-  res.json({ complete: true });
-});
 
 app.use("/api/users", userRoutes);
 app.use("/api/rounds", roundRoutes);
