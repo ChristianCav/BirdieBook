@@ -23,12 +23,30 @@ export async function getCourseById(req: Request, res: Response) {
   }
 }
 
+// export async function createCourse(req: Request, res: Response) {
+//   try {
+//     const course: Course = await queries.createCourse(req.body);
+//     res.status(201).json(course);
+//   } catch (error) {
+//     console.error("Error creating course:", error);
+//     res.status(500).json({ error: "Failed to create course" });
+//   }
+// }
+
 export async function createCourse(req: Request, res: Response) {
   try {
-    const course: Course = await queries.createCourse(req.body);
+    const { name, city, province, country, holes } = req.body;
+    const course = await queries.createCourse({
+      name,
+      city,
+      province,
+      country,
+      holes: holes || [],
+    });
+
     res.status(201).json(course);
   } catch (error) {
-    console.error("Error creating course:", error);
+    console.error("Error creating course with details:", error);
     res.status(500).json({ error: "Failed to create course" });
   }
 }

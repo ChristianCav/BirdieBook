@@ -1,22 +1,12 @@
 import { db } from "./index";
 import { eq } from "drizzle-orm";
-import {
-  users,
-  rounds,
-  roundHoles,
-  courseHoles,
-  courses,
-  teeSetHoles,
-  teeSets,
-} from "./schema";
+import { users, rounds, courses } from "./schema";
 import type {
   NewUser,
   NewRound,
-  NewRoundHoles,
   NewCourse,
-  NewCourseHoles,
-  NewTeeSet,
-  NewTeeSetHoles,
+  CourseHole,
+  RoundHole,
 } from "./schema";
 
 // user queries
@@ -58,8 +48,24 @@ export const upsertUser = async (data: NewUser) => {
 
 // course queries
 
-export const createCourse = async (data: NewCourse) => {
-  const [newCourse] = await db.insert(courses).values(data).returning();
+export const createCourse = async (data: {
+  name: string;
+  city?: string;
+  province?: string;
+  country?: string;
+  holes: CourseHole[];
+}) => {
+  const [newCourse] = await db
+    .insert(courses)
+    .values({
+      name: data.name,
+      city: data.city,
+      province: data.province,
+      country: data.country,
+      holes: data.holes,
+    })
+    .returning();
+
   return newCourse;
 };
 
@@ -85,6 +91,8 @@ export const updateCourse = async (id: string, data: Partial<NewCourse>) => {
   return course;
 };
 
+// course holes queries
+
 export const deleteCourse = async (id: string) => {
   const [course] = await db
     .delete(courses)
@@ -93,133 +101,32 @@ export const deleteCourse = async (id: string) => {
   return course;
 };
 
-// course holes queries
-
-export const createCourseHole = async (data: NewCourseHoles) => {
-  const [newCourseHole] = await db.insert(courseHoles).values(data).returning();
-  return newCourseHole;
-};
-
-export const getCourseHoleById = async (id: string) => {
-  return db.query.courseHoles.findFirst({ where: eq(courseHoles.id, id) });
-};
-
-export const getCourseHolesByCoursId = async (courseId: string) => {
-  return db.query.courseHoles.findMany({
-    where: eq(courseHoles.courseId, courseId),
-  });
-};
-
-export const updateCourseHole = async (
-  id: string,
-  data: Partial<NewCourseHoles>,
-) => {
-  const existingCourseHole = await getCourseHoleById(id);
-
-  if (!existingCourseHole) {
-    throw new Error(`Course hole with id ${id} does not exist`);
-  }
-  const [courseHole] = await db
-    .update(courseHoles)
-    .set(data)
-    .where(eq(courseHoles.id, id))
-    .returning();
-  return courseHole;
-};
-
-export const deleteCourseHole = async (id: string) => {
-  const [courseHole] = await db
-    .delete(courseHoles)
-    .where(eq(courseHoles.id, id))
-    .returning();
-  return courseHole;
-};
-
-// tee set queries
-
-export const createTeeSet = async (data: NewTeeSet) => {
-  const [newTeeSet] = await db.insert(teeSets).values(data).returning();
-  return newTeeSet;
-};
-
-export const getTeeSetById = async (id: string) => {
-  return db.query.teeSets.findFirst({ where: eq(teeSets.id, id) });
-};
-
-export const getTeeSetsByCourseId = async (courseId: string) => {
-  return db.query.teeSets.findMany({ where: eq(teeSets.courseId, courseId) });
-};
-
-export const updateTeeSet = async (id: string, data: Partial<NewTeeSet>) => {
-  const existingTeeSet = await getTeeSetById(id);
-
-  if (!existingTeeSet) {
-    throw new Error(`Tee set with id ${id} does not exist`);
-  }
-  const [teeSet] = await db
-    .update(teeSets)
-    .set(data)
-    .where(eq(teeSets.id, id))
-    .returning();
-  return teeSet;
-};
-
-export const deleteTeeSet = async (id: string) => {
-  const [teeSet] = await db
-    .delete(teeSets)
-    .where(eq(teeSets.id, id))
-    .returning();
-  return teeSet;
-};
-
-// tee set holes queries
-
-export const createTeeSetHole = async (data: NewTeeSetHoles) => {
-  const [newTeeSetHole] = await db.insert(teeSetHoles).values(data).returning();
-  return newTeeSetHole;
-};
-
-export const getTeeSetHoleById = async (id: string) => {
-  return db.query.teeSetHoles.findFirst({
-    where: eq(teeSetHoles.id, id),
-  });
-};
-
-export const getTeeSetHolesByTeeSetId = async (teeSetId: string) => {
-  return db.query.teeSetHoles.findMany({
-    where: eq(teeSetHoles.teeSetId, teeSetId),
-  });
-};
-
-export const updateTeeSetHole = async (
-  id: string,
-  data: Partial<NewTeeSetHoles>,
-) => {
-  const existingTeeSetHole = await getTeeSetHoleById(id);
-
-  if (!existingTeeSetHole) {
-    throw new Error(`Tee set hole with id ${id} does not exist`);
-  }
-  const [teeSetHole] = await db
-    .update(teeSetHoles)
-    .set(data)
-    .where(eq(teeSetHoles.id, id))
-    .returning();
-  return teeSetHole;
-};
-
-export const deleteTeeSetHole = async (id: string) => {
-  const [teeSetHole] = await db
-    .delete(teeSetHoles)
-    .where(eq(teeSetHoles.id, id))
-    .returning();
-  return teeSetHole;
-};
-
 // round queries
 
-export const createRound = async (data: NewRound) => {
-  const [newRound] = await db.insert(rounds).values(data).returning();
+export const createRound = async (data: {
+  userId: string;
+  courseId: string;
+  courseName: string;
+  teeColor?: string;
+  playedAt: Date;
+  totalScore?: number | null;
+  notes?: string;
+  holes: RoundHole[];
+}) => {
+  const [newRound] = await db
+    .insert(rounds)
+    .values({
+      userId: data.userId,
+      courseId: data.courseId,
+      courseName: data.courseName,
+      teeColor: data.teeColor || null,
+      playedAt: data.playedAt,
+      totalScore: data.totalScore || null,
+      notes: data.notes || null,
+      holes: data.holes,
+    })
+    .returning();
+
   return newRound;
 };
 
@@ -250,46 +157,4 @@ export const updateRound = async (id: string, data: Partial<NewRound>) => {
 export const deleteRound = async (id: string) => {
   const [round] = await db.delete(rounds).where(eq(rounds.id, id)).returning();
   return round;
-};
-
-// round holes queries
-
-export const createRoundHole = async (data: NewRoundHoles) => {
-  const [newRoundHole] = await db.insert(roundHoles).values(data).returning();
-  return newRoundHole;
-};
-
-export const getRoundHoleById = async (id: string) => {
-  return db.query.roundHoles.findFirst({ where: eq(roundHoles.id, id) });
-};
-
-export const getRoundHolesByRoundId = async (roundId: string) => {
-  return db.query.roundHoles.findMany({
-    where: eq(roundHoles.roundId, roundId),
-  });
-};
-
-export const updateRoundHole = async (
-  id: string,
-  data: Partial<NewRoundHoles>,
-) => {
-  const existingRoundHole = await getRoundHoleById(id);
-
-  if (!existingRoundHole) {
-    throw new Error(`Round hole with id ${id} does not exist`);
-  }
-  const [roundHole] = await db
-    .update(roundHoles)
-    .set(data)
-    .where(eq(roundHoles.id, id))
-    .returning();
-  return roundHole;
-};
-
-export const deleteRoundHole = async (id: string) => {
-  const [roundHole] = await db
-    .delete(roundHoles)
-    .where(eq(roundHoles.id, id))
-    .returning();
-  return roundHole;
 };

@@ -37,6 +37,11 @@ export const createCourse = async (courseData: any) => {
   return data;
 };
 
+export const createCourseWithDetails = async (courseData: any) => {
+  const { data } = await api.post("/courses/bulk", courseData);
+  return data;
+};
+
 export const updateCourse = async (courseId: string, courseData: any) => {
   const { data } = await api.put(`/courses/${courseId}`, courseData);
   return data;
@@ -145,6 +150,11 @@ export const getRoundById = async (roundId: string) => {
 
 export const createRound = async (roundData: any) => {
   const { data } = await api.post("/rounds", roundData);
+  return data;
+};
+
+export const createRoundWithHoles = async (roundData: any) => {
+  const { data } = await api.post("/rounds/bulk", roundData);
   return data;
 };
 
