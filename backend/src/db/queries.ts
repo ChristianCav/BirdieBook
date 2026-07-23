@@ -103,12 +103,23 @@ export const deleteCourse = async (id: string) => {
 
 // round queries
 
+const normalizeDate = (value: Date | string) => {
+  if (value instanceof Date) return value;
+
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) {
+    throw new Error("Invalid date value");
+  }
+
+  return parsed;
+};
+
 export const createRound = async (data: {
   userId: string;
   courseId: string;
   courseName: string;
   teeColor?: string;
-  playedAt: Date;
+  playedAt: Date | string;
   totalScore?: number | null;
   notes?: string;
   holes: RoundHole[];
@@ -120,7 +131,7 @@ export const createRound = async (data: {
       courseId: data.courseId,
       courseName: data.courseName,
       teeColor: data.teeColor || null,
-      playedAt: data.playedAt,
+      playedAt: normalizeDate(data.playedAt),
       totalScore: data.totalScore || null,
       notes: data.notes || null,
       holes: data.holes,

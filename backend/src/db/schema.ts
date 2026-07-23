@@ -108,6 +108,7 @@ export type CourseHole = {
   holeNumber: number;
   par: number;
   handicap?: number;
+  yardage?: number;
 };
 
 export type Course = typeof courses.$inferSelect;
