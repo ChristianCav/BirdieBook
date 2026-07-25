@@ -5,7 +5,7 @@ import type {
   NewUser,
   NewRound,
   NewCourse,
-  CourseHole,
+  CourseHolesByTee,
   RoundHole,
 } from "./schema";
 
@@ -53,7 +53,7 @@ export const createCourse = async (data: {
   city?: string;
   province?: string;
   country?: string;
-  holes: CourseHole[];
+  holes: CourseHolesByTee;
 }) => {
   const [newCourse] = await db
     .insert(courses)

@@ -31,7 +31,7 @@ export const courses = pgTable("courses", {
 
   country: text("country"),
 
-  holes: jsonb("holes").notNull().default([]),
+  holes: jsonb("holes").notNull().default({}),
 
   createdAt: timestamp("created_at", {
     withTimezone: true,
@@ -110,6 +110,8 @@ export type CourseHole = {
   handicap?: number;
   yardage?: number;
 };
+
+export type CourseHolesByTee = Record<string, CourseHole[]>;
 
 export type Course = typeof courses.$inferSelect;
 export type NewCourse = typeof courses.$inferInsert;

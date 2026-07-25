@@ -41,7 +41,7 @@ export async function createCourse(req: Request, res: Response) {
       city,
       province,
       country,
-      holes: holes || [],
+      holes: holes || {},
     });
 
     res.status(201).json(course);
