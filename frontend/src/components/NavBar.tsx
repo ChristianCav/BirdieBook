@@ -14,7 +14,7 @@ const NavBar = () => {
     <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-800 bg-slate-950 px-4 py-4 text-slate-100 shadow-sm shadow-slate-950/20">
       <div className="flex items-center gap-3">
         <Link to="/" className="text-lg font-semibold text-white">
-          Golf Logger
+          BirdieBook
         </Link>
       </div>
 
