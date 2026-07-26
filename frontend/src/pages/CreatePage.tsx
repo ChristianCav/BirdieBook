@@ -200,10 +200,15 @@ const CreatePage = () => {
   return (
     <div className="min-h-screen bg-slate-950 p-6 text-slate-100">
       <div className="max-w-6xl mx-auto">
-        <h1 className="text-4xl font-bold text-white mb-8">Log a Round</h1>
-
         {/* Selection Section */}
         <div className="bg-slate-900 rounded-3xl shadow-2xl shadow-slate-950/30 p-6 mb-8 border border-slate-700">
+          <button
+            onClick={() => navigate("/")}
+            className="mb-4 text-sm font-medium text-emerald-400 transition hover:text-emerald-300"
+          >
+            ← Back to overview
+          </button>
+          <h1 className="text-4xl font-bold text-white mb-8">Log a Round</h1>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Course Selection */}
             <div>
@@ -320,6 +325,15 @@ const CreatePage = () => {
                         <th className="px-4 py-2 text-center font-semibold text-slate-300">
                           Putts
                         </th>
+                        <th className="px-4 py-2 text-center font-semibold text-slate-300">
+                          Penalties
+                        </th>
+                        <th className="px-4 py-2 text-center font-semibold text-slate-300">
+                          FIR
+                        </th>
+                        <th className="px-4 py-2 text-center font-semibold text-slate-300">
+                          GIR
+                        </th>
                       </tr>
                     </thead>
                     <tbody>
@@ -378,6 +392,53 @@ const CreatePage = () => {
                               placeholder="—"
                             />
                           </td>
+                          <td className="px-4 py-3 text-center">
+                            <input
+                              type="number"
+                              min="0"
+                              max="10"
+                              value={hole.penaltyStrokes || ""}
+                              onChange={(e) =>
+                                handleScoreChange(
+                                  hole.holeNumber,
+                                  "penaltyStrokes",
+                                  e.target.value
+                                    ? parseInt(e.target.value)
+                                    : undefined,
+                                )
+                              }
+                              className="w-16 px-2 py-1 bg-slate-950 text-slate-100 border border-slate-700 rounded text-center focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                              placeholder="0"
+                            />
+                          </td>
+                          <td className="px-4 py-3 text-center">
+                            <input
+                              type="checkbox"
+                              checked={hole.fairwayHit ?? false}
+                              onChange={(e) =>
+                                handleScoreChange(
+                                  hole.holeNumber,
+                                  "fairwayHit",
+                                  e.target.checked,
+                                )
+                              }
+                              className="h-5 w-5 accent-emerald-500"
+                            />
+                          </td>
+                          <td className="px-4 py-3 text-center">
+                            <input
+                              type="checkbox"
+                              checked={hole.gir ?? false}
+                              onChange={(e) =>
+                                handleScoreChange(
+                                  hole.holeNumber,
+                                  "gir",
+                                  e.target.checked,
+                                )
+                              }
+                              className="h-5 w-5 accent-emerald-500"
+                            />
+                          </td>
                         </tr>
                       ))}
                       {holes.slice(0, 9).length > 0 && (
@@ -395,6 +456,23 @@ const CreatePage = () => {
                             {holes
                               .slice(0, 9)
                               .reduce((sum, h) => sum + (h.putts || 0), 0)}
+                          </td>
+                          <td className="px-4 py-3 text-center text-emerald-300">
+                            {holes
+                              .slice(0, 9)
+                              .reduce(
+                                (sum, h) => sum + (h.penaltyStrokes || 0),
+                                0,
+                              )}
+                          </td>
+                          <td className="px-4 py-3 text-center text-emerald-300">
+                            {
+                              holes.slice(0, 9).filter((h) => h.fairwayHit)
+                                .length
+                            }
+                          </td>
+                          <td className="px-4 py-3 text-center text-emerald-300">
+                            {holes.slice(0, 9).filter((h) => h.gir).length}
                           </td>
                         </tr>
                       )}
@@ -430,6 +508,15 @@ const CreatePage = () => {
                           </th>
                           <th className="px-4 py-2 text-center font-semibold text-slate-300">
                             Putts
+                          </th>
+                          <th className="px-4 py-2 text-center font-semibold text-slate-300">
+                            Penalties
+                          </th>
+                          <th className="px-4 py-2 text-center font-semibold text-slate-300">
+                            FIR
+                          </th>
+                          <th className="px-4 py-2 text-center font-semibold text-slate-300">
+                            GIR
                           </th>
                         </tr>
                       </thead>
@@ -489,6 +576,53 @@ const CreatePage = () => {
                                 placeholder="—"
                               />
                             </td>
+                            <td className="px-4 py-3 text-center">
+                              <input
+                                type="number"
+                                min="0"
+                                max="10"
+                                value={hole.penaltyStrokes || ""}
+                                onChange={(e) =>
+                                  handleScoreChange(
+                                    hole.holeNumber,
+                                    "penaltyStrokes",
+                                    e.target.value
+                                      ? parseInt(e.target.value)
+                                      : undefined,
+                                  )
+                                }
+                                className="w-16 px-2 py-1 bg-slate-950 text-slate-100 border border-slate-700 rounded text-center focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                                placeholder="0"
+                              />
+                            </td>
+                            <td className="px-4 py-3 text-center">
+                              <input
+                                type="checkbox"
+                                checked={hole.fairwayHit ?? false}
+                                onChange={(e) =>
+                                  handleScoreChange(
+                                    hole.holeNumber,
+                                    "fairwayHit",
+                                    e.target.checked,
+                                  )
+                                }
+                                className="h-5 w-5 accent-emerald-500"
+                              />
+                            </td>
+                            <td className="px-4 py-3 text-center">
+                              <input
+                                type="checkbox"
+                                checked={hole.gir ?? false}
+                                onChange={(e) =>
+                                  handleScoreChange(
+                                    hole.holeNumber,
+                                    "gir",
+                                    e.target.checked,
+                                  )
+                                }
+                                className="h-5 w-5 accent-emerald-500"
+                              />
+                            </td>
                           </tr>
                         ))}
                         {holes.slice(9).length > 0 && (
@@ -509,6 +643,23 @@ const CreatePage = () => {
                               {holes
                                 .slice(9)
                                 .reduce((sum, h) => sum + (h.putts || 0), 0)}
+                            </td>
+                            <td className="px-4 py-3 text-center text-emerald-300">
+                              {holes
+                                .slice(9)
+                                .reduce(
+                                  (sum, h) => sum + (h.penaltyStrokes || 0),
+                                  0,
+                                )}
+                            </td>
+                            <td className="px-4 py-3 text-center text-emerald-300">
+                              {
+                                holes.slice(9).filter((h) => h.fairwayHit)
+                                  .length
+                              }
+                            </td>
+                            <td className="px-4 py-3 text-center text-emerald-300">
+                              {holes.slice(9).filter((h) => h.gir).length}
                             </td>
                           </tr>
                         )}

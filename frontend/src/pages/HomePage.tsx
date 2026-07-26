@@ -1,9 +1,11 @@
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useNavigate } from "react-router";
 import { getUserRounds } from "../lib/api";
 import { useAuth } from "@clerk/clerk-react";
 
 const HomePage = () => {
+  const navigate = useNavigate();
   const { userId } = useAuth();
 
   const { data: rounds = [], isLoading } = useQuery({
@@ -109,9 +111,11 @@ const HomePage = () => {
           ) : (
             <div className="space-y-3">
               {recentRounds.map((round: any) => (
-                <div
+                <button
                   key={round.id}
-                  className="flex flex-col gap-2 rounded-2xl border border-slate-800 bg-slate-950 p-4 md:flex-row md:items-center md:justify-between"
+                  type="button"
+                  onClick={() => navigate(`/rounds/${round.id}`)}
+                  className="flex w-full flex-col gap-2 rounded-2xl border border-slate-800 bg-slate-950 p-4 text-left transition hover:border-emerald-500/60 hover:bg-slate-900 md:flex-row md:items-center md:justify-between"
                 >
                   <div>
                     <p className="font-semibold text-slate-100">
@@ -126,7 +130,7 @@ const HomePage = () => {
                     <span>Score: {round.totalScore ?? "—"}</span>
                     <span>Holes: {round.holes?.length ?? 0}</span>
                   </div>
-                </div>
+                </button>
               ))}
             </div>
           )}

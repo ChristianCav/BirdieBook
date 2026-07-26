@@ -142,6 +142,12 @@ const AddCoursePage = () => {
   return (
     <div className="min-h-screen bg-slate-950 p-6 text-slate-100">
       <div className="mx-auto max-w-5xl rounded-3xl border border-slate-700 bg-slate-900 p-8 shadow-lg shadow-slate-950/20">
+        <button
+          onClick={() => navigate("/")}
+          className="mb-4 text-sm font-medium text-emerald-400 transition hover:text-emerald-300"
+        >
+          ← Back to overview
+        </button>
         <h1 className="text-3xl font-bold text-white">Add a Course</h1>
         <p className="mt-2 text-slate-400">
           Build the course profile with tee options and hole details.

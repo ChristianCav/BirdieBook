@@ -6,6 +6,7 @@ import useUserSync from "./hooks/useUserSync";
 import ProfilePage from "./pages/ProfilePage";
 import CreatePage from "./pages/CreatePage";
 import AddCoursePage from "./pages/AddCoursePage";
+import RoundPage from "./pages/RoundPage";
 
 function App() {
   const { isClerkLoaded } = useAuthReq();
@@ -21,6 +22,7 @@ function App() {
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/create" element={<CreatePage />} />
           <Route path="/courses/new" element={<AddCoursePage />} />
+          <Route path="/rounds/:roundId" element={<RoundPage />} />
         </Routes>
       </main>
     </div>
