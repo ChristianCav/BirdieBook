@@ -22,8 +22,13 @@ export const getUserRounds = async (userId: string) => {
 };
 
 // Courses
-export const getCourses = async () => {
+export const getAllCourses = async () => {
   const { data } = await api.get("/courses");
+  return data;
+};
+
+export const getMyCourses = async () => {
+  const { data } = await api.get("/courses/me");
   return data;
 };
 

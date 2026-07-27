@@ -7,6 +7,9 @@ import ProfilePage from "./pages/ProfilePage";
 import CreatePage from "./pages/CreatePage";
 import AddCoursePage from "./pages/AddCoursePage";
 import RoundPage from "./pages/RoundPage";
+import CoursesPage from "./pages/AllCoursesPage";
+import CourseInfoPage from "./pages/CourseInfoPage";
+import MyCoursesPage from "./pages/MyCoursesPage";
 
 function App() {
   const { isClerkLoaded } = useAuthReq();
@@ -23,6 +26,9 @@ function App() {
           <Route path="/create" element={<CreatePage />} />
           <Route path="/courses/new" element={<AddCoursePage />} />
           <Route path="/rounds/:roundId" element={<RoundPage />} />
+          <Route path="/courses" element={<CoursesPage />} />
+          <Route path="/courses/:courseId" element={<CourseInfoPage />} />
+          <Route path="/my-courses" element={<MyCoursesPage />} />
         </Routes>
       </main>
     </div>

@@ -49,6 +49,7 @@ export const upsertUser = async (data: NewUser) => {
 // course queries
 
 export const createCourse = async (data: {
+  creatorId: string;
   name: string;
   city?: string;
   province?: string;
@@ -58,6 +59,7 @@ export const createCourse = async (data: {
   const [newCourse] = await db
     .insert(courses)
     .values({
+      creatorId: data.creatorId,
       name: data.name,
       city: data.city,
       province: data.province,
@@ -71,6 +73,10 @@ export const createCourse = async (data: {
 
 export const getCourseById = async (id: string) => {
   return db.query.courses.findFirst({ where: eq(courses.id, id) });
+};
+
+export const getMyCourses = async (userId: string) => {
+  return db.query.courses.findMany({ where: eq(courses.creatorId, userId) });
 };
 
 export const getAllCourses = async () => {

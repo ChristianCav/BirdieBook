@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLocation, useNavigate } from "react-router";
-import { getCourses, createRound } from "../lib/api";
+import { createRound, getAllCourses } from "../lib/api";
 import { useAuth } from "@clerk/clerk-react";
 
 interface HoleData {
@@ -32,7 +32,7 @@ const CreatePage = () => {
   // Fetch courses
   const { data: courses = [] } = useQuery({
     queryKey: ["courses"],
-    queryFn: getCourses,
+    queryFn: getAllCourses,
   });
 
   const selectedCourse = courses.find((c: any) => c.id === selectedCourseId);

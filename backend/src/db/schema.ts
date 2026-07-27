@@ -23,6 +23,10 @@ export const users = pgTable("users", {
 export const courses = pgTable("courses", {
   id: uuid("id").primaryKey().defaultRandom(),
 
+  creatorId: text("creator_id")
+    .references(() => users.id)
+    .notNull(),
+
   name: text("name").notNull(),
 
   city: text("city"),
@@ -80,9 +84,14 @@ export const rounds = pgTable("rounds", {
 
 export const usersRelations = relations(users, ({ many }) => ({
   rounds: many(rounds),
+  courses: many(courses),
 }));
 
-export const coursesRelations = relations(courses, ({ many }) => ({
+export const coursesRelations = relations(courses, ({ one, many }) => ({
+  creator: one(users, {
+    fields: [courses.creatorId],
+    references: [users.id],
+  }),
   rounds: many(rounds),
 }));
 

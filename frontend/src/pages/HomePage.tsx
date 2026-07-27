@@ -8,7 +8,11 @@ const HomePage = () => {
   const navigate = useNavigate();
   const { userId } = useAuth();
 
-  const { data: rounds = [], isLoading } = useQuery({
+  const {
+    data: rounds = [],
+    isLoading,
+    isError,
+  } = useQuery({
     queryKey: ["userRounds", userId],
     queryFn: () => getUserRounds(userId!),
     enabled: !!userId,
@@ -98,7 +102,11 @@ const HomePage = () => {
             <h2 className="text-2xl font-semibold text-white">Recent rounds</h2>
             <span className="text-sm text-slate-400">Latest 5</span>
           </div>
-
+          {isError && (
+            <div className="rounded-2xl border border-slate-800 bg-slate-950 p-6 text-slate-400">
+              Error loading rounds. Please try again later.
+            </div>
+          )}
           {isLoading ? (
             <div className="rounded-2xl border border-slate-800 bg-slate-950 p-6 text-slate-400">
               Loading rounds...
