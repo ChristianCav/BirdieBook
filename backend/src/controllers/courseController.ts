@@ -98,3 +98,49 @@ export async function deleteCourse(req: Request, res: Response) {
     res.status(500).json({ error: "Failed to delete course" });
   }
 }
+
+export async function addCourseToMyCourses(req: Request, res: Response) {
+  try {
+    const { userId } = getAuth(req);
+
+    if (!userId) {
+      return res.status(401).json({
+        error: "Unauthorized",
+      });
+    }
+
+    const courseId = req.params.courseId as string;
+
+    await queries.addCourseToUser(userId, courseId);
+
+    res.sendStatus(204);
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      error: "Failed to add course",
+    });
+  }
+}
+
+export async function removeCourseFromMyCourses(req: Request, res: Response) {
+  try {
+    const { userId } = getAuth(req);
+
+    if (!userId) {
+      return res.status(401).json({
+        error: "Unauthorized",
+      });
+    }
+
+    await queries.removeCourseFromUser(userId, req.params.courseId as string);
+
+    res.sendStatus(204);
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      error: "Failed to remove course",
+    });
+  }
+}

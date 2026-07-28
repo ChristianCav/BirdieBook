@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router";
 import { getUserRounds } from "../lib/api";
 import { useAuth } from "@clerk/clerk-react";
+import type { Round } from "../lib/types";
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -39,7 +40,7 @@ const HomePage = () => {
     }
 
     const scores = rounds
-      .map((round: any) => Number(round.totalScore))
+      .map((round: Round) => Number(round.totalScore))
       .filter((score: number) => Number.isFinite(score));
 
     const averageScore = scores.length

@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { getAllCourses } from "../lib/api";
+import type { Course } from "../lib/types";
 
 const CoursesPage = () => {
   const {
@@ -19,7 +20,7 @@ const CoursesPage = () => {
         <p>Error loading courses.</p>
       ) : (
         <ul>
-          {courses?.map((course) => (
+          {courses?.map((course: Course) => (
             <div>
               <a href={`/courses/${course.id}`}>{course.name}</a>
             </div>

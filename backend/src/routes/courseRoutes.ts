@@ -6,6 +6,8 @@ import {
   createCourse,
   updateCourse,
   deleteCourse,
+  addCourseToMyCourses,
+  removeCourseFromMyCourses,
 } from "../controllers/courseController";
 
 const router = Router();
@@ -16,5 +18,7 @@ router.get("/:courseId", getCourseById);
 router.post("/", createCourse);
 router.put("/:courseId", updateCourse);
 router.delete("/:courseId", deleteCourse);
+router.post("/:courseId/add", addCourseToMyCourses);
+router.delete("/:courseId/remove", removeCourseFromMyCourses);
 
 export default router;

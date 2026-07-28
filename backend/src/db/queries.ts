@@ -1,6 +1,6 @@
 import { db } from "./index";
-import { eq } from "drizzle-orm";
-import { users, rounds, courses } from "./schema";
+import { eq, and } from "drizzle-orm";
+import { users, rounds, courses, userCourses } from "./schema";
 import type {
   NewUser,
   NewRound,
@@ -56,7 +56,7 @@ export const createCourse = async (data: {
   country?: string;
   holes: CourseHolesByTee;
 }) => {
-  const [newCourse] = await db
+  const [course] = await db
     .insert(courses)
     .values({
       creatorId: data.creatorId,
@@ -68,7 +68,12 @@ export const createCourse = async (data: {
     })
     .returning();
 
-  return newCourse;
+  await db.insert(userCourses).values({
+    userId: data.creatorId,
+    courseId: course.id,
+  });
+
+  return course;
 };
 
 export const getCourseById = async (id: string) => {
@@ -76,7 +81,14 @@ export const getCourseById = async (id: string) => {
 };
 
 export const getMyCourses = async (userId: string) => {
-  return db.query.courses.findMany({ where: eq(courses.creatorId, userId) });
+  const result = await db.query.userCourses.findMany({
+    where: eq(userCourses.userId, userId),
+    with: {
+      course: true,
+    },
+  });
+
+  return result.map((entry) => entry.course);
 };
 
 export const getAllCourses = async () => {
@@ -174,4 +186,28 @@ export const updateRound = async (id: string, data: Partial<NewRound>) => {
 export const deleteRound = async (id: string) => {
   const [round] = await db.delete(rounds).where(eq(rounds.id, id)).returning();
   return round;
+};
+
+export const addCourseToUser = async (userId: string, courseId: string) => {
+  const [userCourse] = await db
+    .insert(userCourses)
+    .values({
+      userId,
+      courseId,
+    })
+    .onConflictDoNothing()
+    .returning();
+
+  return userCourse;
+};
+
+export const removeCourseFromUser = async (
+  userId: string,
+  courseId: string,
+) => {
+  await db
+    .delete(userCourses)
+    .where(
+      and(eq(userCourses.userId, userId), eq(userCourses.courseId, courseId)),
+    );
 };

@@ -5,6 +5,7 @@ import {
   uuid,
   integer,
   jsonb,
+  primaryKey,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 
@@ -82,9 +83,36 @@ export const rounds = pgTable("rounds", {
     .notNull(),
 });
 
+export const userCourses = pgTable(
+  "user_courses",
+  {
+    userId: text("user_id")
+      .references(() => users.id)
+      .notNull(),
+
+    courseId: uuid("course_id")
+      .references(() => courses.id)
+      .notNull(),
+
+    addedAt: timestamp("added_at", {
+      mode: "date",
+    })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => ({
+    pk: primaryKey({
+      columns: [table.userId, table.courseId],
+    }),
+  }),
+);
+
 export const usersRelations = relations(users, ({ many }) => ({
   rounds: many(rounds),
-  courses: many(courses),
+
+  createdCourses: many(courses),
+
+  userCourses: many(userCourses),
 }));
 
 export const coursesRelations = relations(courses, ({ one, many }) => ({
@@ -92,7 +120,22 @@ export const coursesRelations = relations(courses, ({ one, many }) => ({
     fields: [courses.creatorId],
     references: [users.id],
   }),
+
   rounds: many(rounds),
+
+  userCourses: many(userCourses),
+}));
+
+export const userCoursesRelations = relations(userCourses, ({ one }) => ({
+  user: one(users, {
+    fields: [userCourses.userId],
+    references: [users.id],
+  }),
+
+  course: one(courses, {
+    fields: [userCourses.courseId],
+    references: [courses.id],
+  }),
 }));
 
 export const roundsRelations = relations(rounds, ({ one }) => ({
@@ -133,3 +176,6 @@ export type RoundHole = {
   greenInRegulation?: boolean | null;
   penaltyStrokes?: number | null;
 };
+
+export type UserCourse = typeof userCourses.$inferSelect;
+export type NewUserCourse = typeof userCourses.$inferInsert;
