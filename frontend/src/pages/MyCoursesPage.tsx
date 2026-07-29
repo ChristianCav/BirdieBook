@@ -18,13 +18,16 @@ const MyCoursesPage = () => {
       ) : isError ? (
         <p>Error loading courses.</p>
       ) : (
-        <ul>
-          {courses?.map((course: Course) => (
-            <div>
-              <a href={`/courses/${course.id}`}>{course.name}</a>
-            </div>
-          ))}
-        </ul>
+        <div>
+          <h1>My Courses</h1>
+          <ul>
+            {courses?.map((course: Course) => (
+              <div>
+                <a href={`/courses/${course.id}`}>{course.name}</a>
+              </div>
+            ))}
+          </ul>
+        </div>
       )}
     </div>
   );

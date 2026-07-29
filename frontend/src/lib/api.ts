@@ -73,4 +73,9 @@ export const deleteRound = async (roundId: string) => {
   return data;
 };
 
+export const addCourseToUser = async (courseId: string) => {
+  const { data } = await api.post(`/courses/${courseId}/add`);
+  return data;
+};
+
 export default api;
