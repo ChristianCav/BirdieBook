@@ -25,7 +25,7 @@ const buildHoleDrafts = (
     yardage: existing[index]?.yardage ?? 350,
   }));
 
-const AddCoursePage = () => {
+const CreateCoursePage = () => {
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [city, setCity] = useState("");
@@ -130,7 +130,7 @@ const AddCoursePage = () => {
         holes: holesPayload,
       });
 
-      navigate(`/create?courseId=${createdCourse.id}`);
+      navigate(`/rounds/new?courseId=${createdCourse.id}`);
     } catch (err) {
       console.error("Error creating course:", err);
       setError("We could not create the course. Please try again.");
@@ -383,4 +383,4 @@ const AddCoursePage = () => {
   );
 };
 
-export default AddCoursePage;
+export default CreateCoursePage;

@@ -4,8 +4,8 @@ import HomePage from "./pages/HomePage";
 import useAuthReq from "./hooks/useAuthReq";
 import useUserSync from "./hooks/useUserSync";
 import ProfilePage from "./pages/ProfilePage";
-import CreatePage from "./pages/CreatePage";
-import AddCoursePage from "./pages/AddCoursePage";
+import CreateRoundPage from "./pages/CreateRoundPage";
+import CreateCoursePage from "./pages/CreateCoursePage";
 import RoundPage from "./pages/RoundPage";
 import AllCoursesPage from "./pages/AllCoursesPage";
 import CourseInfoPage from "./pages/CourseInfoPage";
@@ -23,12 +23,12 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/create" element={<CreatePage />} />
-          <Route path="/courses/new" element={<AddCoursePage />} />
+          <Route path="/rounds/new" element={<CreateRoundPage />} />
+          <Route path="/courses/new" element={<CreateCoursePage />} />
           <Route path="/rounds/:roundId" element={<RoundPage />} />
-          <Route path="/courses" element={<AllCoursesPage />} />
+          <Route path="/courses/all" element={<AllCoursesPage />} />
           <Route path="/courses/:courseId" element={<CourseInfoPage />} />
-          <Route path="/my-courses" element={<MyCoursesPage />} />
+          <Route path="/courses/me" element={<MyCoursesPage />} />
         </Routes>
       </main>
     </div>

@@ -16,7 +16,7 @@ interface HoleData {
   penaltyStrokes?: number;
 }
 
-const CreatePage = () => {
+const CreateRoundPage = () => {
   const { userId } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
@@ -221,7 +221,7 @@ const CreatePage = () => {
                   setSelectedCourseId(e.target.value);
                   setSelectedTeeColor("");
                   setHoles([]);
-                  navigate("/create", { replace: true });
+                  navigate("/rounds/new", { replace: true });
                 }}
                 className="w-full bg-slate-950 text-slate-100 px-4 py-2 border border-slate-700 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
               >
@@ -695,4 +695,4 @@ const CreatePage = () => {
   );
 };
 
-export default CreatePage;
+export default CreateRoundPage;

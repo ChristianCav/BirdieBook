@@ -21,15 +21,15 @@ const NavBar = () => {
       <div className="flex flex-wrap items-center gap-2">
         {isSignedIn ? (
           <>
-            <Link to="/courses" className="btn btn-ghost btn-sm gap-1">
+            <Link to="/courses/all" className="btn btn-ghost btn-sm gap-1">
               <EarthIcon className="size-4" />
               <span className="hidden sm:inline">Browse Courses</span>
             </Link>
-            <Link to="/my-courses" className="btn btn-ghost btn-sm gap-1">
+            <Link to="/courses/me" className="btn btn-ghost btn-sm gap-1">
               <EarthIcon className="size-4" />
               <span className="hidden sm:inline">My Courses</span>
             </Link>
-            <Link to="/create" className="btn btn-primary btn-sm gap-1">
+            <Link to="/rounds/new" className="btn btn-primary btn-sm gap-1">
               <PlusIcon className="size-4" />
               <span className="hidden sm:inline">New Round</span>
             </Link>
