@@ -78,4 +78,9 @@ export const addCourseToUser = async (courseId: string) => {
   return data;
 };
 
+export const removeCourseFromUser = async (courseId: string) => {
+  const { data } = await api.delete(`/courses/${courseId}/remove`);
+  return data;
+};
+
 export default api;
