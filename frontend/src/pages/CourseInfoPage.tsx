@@ -64,11 +64,26 @@ const CourseInfoPage = () => {
         ].sort((a, b) => a - b)
       : [];
 
+  const sortedTeeSets = [...teeSets].sort((a, b) => {
+    const getTotalYardage = (holes: (typeof teeSets)[number][1]) =>
+      holeNumbers.reduce((sum, holeNumber) => {
+        const hole = holes.find((item) => item.holeNumber === holeNumber);
+        return sum + (hole?.yardage ?? 0);
+      }, 0);
+
+    const yardageDifference = getTotalYardage(b[1]) - getTotalYardage(a[1]);
+    if (yardageDifference !== 0) {
+      return yardageDifference;
+    }
+
+    return a[0].localeCompare(b[0]);
+  });
+
   const frontNine = holeNumbers.filter((holeNumber) => holeNumber <= 9);
   const backNine = holeNumbers.filter((holeNumber) => holeNumber > 9);
 
   const buildTotals = (segment: number[]) => {
-    return teeSets.map(([teeColour, holes]) => {
+    return sortedTeeSets.map(([teeColour, holes]) => {
       const totalYardage = segment.reduce((sum, holeNumber) => {
         const hole = holes.find((item) => item.holeNumber === holeNumber);
         return sum + (hole?.yardage ?? 0);
@@ -92,6 +107,27 @@ const CourseInfoPage = () => {
     return Number.isNaN(parsedDate.getTime())
       ? "—"
       : parsedDate.toLocaleDateString();
+  };
+
+  const getTeeColourStyle = (teeColour: string | undefined) => {
+    const normalizedColour = teeColour?.toLowerCase();
+
+    switch (normalizedColour) {
+      case "blue":
+        return "bg-blue-800 text-white border-blue-700";
+      case "red":
+        return "bg-rose-600 text-white border-rose-700";
+      case "yellow":
+        return "bg-amber-400 text-slate-900 border-amber-500";
+      case "white":
+        return "bg-slate-100 text-slate-900 border-slate-300";
+      case "gold":
+        return "bg-yellow-500 text-slate-900 border-yellow-600";
+      case "black":
+        return "bg-slate-900 text-white border-slate-950";
+      default:
+        return "bg-slate-100 text-slate-700 border-slate-200";
+    }
   };
 
   const renderSection = (
@@ -134,13 +170,15 @@ const CourseInfoPage = () => {
               ) : null}
             </div>
 
-            {teeSets.map(([teeColour, holes]) => (
+            {sortedTeeSets.map(([teeColour, holes]) => (
               <div
                 key={`${title}-${teeColour}`}
                 className="grid border-b border-slate-200 bg-white text-sm"
                 style={{ gridTemplateColumns: columnTemplate }}
               >
-                <div className="px-3 py-3 font-semibold text-slate-700">
+                <div
+                  className={`px-3 py-3 font-semibold border-l border-slate-200 ${getTeeColourStyle(teeColour)}`}
+                >
                   {teeColour}
                 </div>
                 {segment.map((holeNumber) => {
@@ -151,18 +189,22 @@ const CourseInfoPage = () => {
                   return (
                     <div
                       key={`${title}-${teeColour}-${holeNumber}`}
-                      className="border-l border-slate-100 px-3 py-3 text-center text-slate-700"
+                      className={`border-l border-slate-100 px-3 py-3 text-center ${getTeeColourStyle(teeColour)}`}
                     >
                       {hole?.yardage ?? "-"}
                     </div>
                   );
                 })}
-                <div className="border-l border-slate-100 px-3 py-3 text-center text-slate-700">
+                <div
+                  className={`border-l border-slate-100 px-3 py-3 text-center ${getTeeColourStyle(teeColour)}`}
+                >
                   {sectionTotals.find((item) => item.teeColour === teeColour)
                     ?.totalYardage ?? "-"}
                 </div>
                 {includeOverallTotals ? (
-                  <div className="border-l border-slate-100 px-3 py-3 text-center text-slate-700">
+                  <div
+                    className={`border-l border-slate-100 px-3 py-3 text-center ${getTeeColourStyle(teeColour)}`}
+                  >
                     {overallTotals.find((item) => item.teeColour === teeColour)
                       ?.totalYardage ?? "-"}
                   </div>
@@ -176,7 +218,7 @@ const CourseInfoPage = () => {
             >
               <div className="px-3 py-3 font-semibold text-slate-700">HCP</div>
               {segment.map((holeNumber) => {
-                const hole = teeSets[0]?.[1].find(
+                const hole = sortedTeeSets[0]?.[1].find(
                   (item) => item.holeNumber === holeNumber,
                 );
 
@@ -203,30 +245,32 @@ const CourseInfoPage = () => {
               className="grid border-b border-slate-200 bg-white text-sm"
               style={{ gridTemplateColumns: columnTemplate }}
             >
-              <div className="px-3 py-3 font-semibold text-slate-700">Par</div>
+              <div className="px-3 py-3 font-semibold bg-black text-white border-slate-950">
+                Par
+              </div>
               {segment.map((holeNumber) => {
-                const hole = teeSets[0]?.[1].find(
+                const hole = sortedTeeSets[0]?.[1].find(
                   (item) => item.holeNumber === holeNumber,
                 );
 
                 return (
                   <div
                     key={`${title}-par-${holeNumber}`}
-                    className="border-l border-slate-100 px-3 py-3 text-center text-slate-700"
+                    className="border-l bg-black text-white border-slate-95 px-3 py-3 text-center"
                   >
                     {hole?.par ?? "-"}
                   </div>
                 );
               })}
-              <div className="border-l border-slate-100 px-3 py-3 text-center text-slate-700">
+              <div className="border-l bg-black text-white border-slate-950 px-3 py-3 text-center ">
                 {sectionTotals.find(
-                  (item) => item.teeColour === teeSets[0]?.[0],
+                  (item) => item.teeColour === sortedTeeSets[0]?.[0],
                 )?.totalPar ?? "-"}
               </div>
               {includeOverallTotals ? (
-                <div className="border-l border-slate-100 px-3 py-3 text-center text-slate-700">
+                <div className="border-l bg-black text-white border-slate-950 px-3 py-3 text-center">
                   {overallTotals.find(
-                    (item) => item.teeColour === teeSets[0]?.[0],
+                    (item) => item.teeColour === sortedTeeSets[0]?.[0],
                   )?.totalPar ?? "-"}
                 </div>
               ) : null}

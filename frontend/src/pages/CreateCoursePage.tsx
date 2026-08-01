@@ -265,14 +265,29 @@ const CreateCoursePage = () => {
                       <label className="mb-2 block text-sm font-semibold text-slate-300">
                         Tee color
                       </label>
-                      <input
+                      <select
+                        className="w-full rounded-lg border border-slate-700 bg-slate-950 px-4 py-2 text-slate-100 focus:border-emerald-500 focus:outline-none"
+                        onChange={(e) =>
+                          updateTeeName(teeIndex, e.target.value)
+                        }
                         value={tee.name}
+                      >
+                        <option value="Blue">Blue</option>
+                        <option value="White">White</option>
+                        <option value="Red">Red</option>
+                        <option value="Yellow">Yellow</option>
+                        <option value="Gold">Gold</option>
+                        <option value="Black">Black</option>
+                      </select>
+                      {/* <<input
+                        value={tee.name}
+                        type=""
                         onChange={(e) =>
                           updateTeeName(teeIndex, e.target.value)
                         }
                         className="w-full rounded-lg border border-slate-700 bg-slate-950 px-4 py-2 text-slate-100 focus:border-emerald-500 focus:outline-none"
                         placeholder="Blue"
-                      />
+                      />> */}
                     </div>
 
                     {tees.length > 1 ? (

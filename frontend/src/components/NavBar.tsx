@@ -5,7 +5,13 @@ import {
   useAuth,
 } from "@clerk/clerk-react";
 import { Link } from "react-router";
-import { PlusIcon, PlusCircleIcon, UserIcon, EarthIcon } from "lucide-react";
+import {
+  PlusIcon,
+  PlusCircleIcon,
+  UserIcon,
+  EarthIcon,
+  LandPlotIcon,
+} from "lucide-react";
 
 const NavBar = () => {
   const { isSignedIn } = useAuth();
@@ -26,7 +32,7 @@ const NavBar = () => {
               <span className="hidden sm:inline">Browse Courses</span>
             </Link>
             <Link to="/courses/me" className="btn btn-ghost btn-sm gap-1">
-              <EarthIcon className="size-4" />
+              <LandPlotIcon className="size-4" />
               <span className="hidden sm:inline">My Courses</span>
             </Link>
             <Link to="/rounds/new" className="btn btn-primary btn-sm gap-1">
