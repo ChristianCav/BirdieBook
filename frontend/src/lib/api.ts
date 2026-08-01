@@ -21,6 +21,16 @@ export const getUserRounds = async (userId: string) => {
   return data;
 };
 
+export const getUserRoundsByCourse = async (
+  userId: string,
+  courseId: string,
+) => {
+  const { data } = await api.get(`/users/${userId}/rounds`, {
+    params: { courseId },
+  });
+  return data;
+};
+
 // Courses
 export const getAllCourses = async () => {
   const { data } = await api.get("/courses");

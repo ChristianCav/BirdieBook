@@ -12,17 +12,17 @@ const AllCoursesPage = () => {
     data: allCourses = [],
     isLoading,
     isError,
-  } = useQuery({
+  } = useQuery<Course[]>({
     queryKey: ["courses"],
     queryFn: getAllCourses,
   });
 
-  const { data: myCourses = [] } = useQuery({
+  const { data: myCourses = [] } = useQuery<Course[]>({
     queryKey: ["myCourses"],
     queryFn: getMyCourses,
   });
 
-  const myCourseIds = new Set(myCourses.map((course: Course) => course.id));
+  const myCourseIds = new Set(myCourses.map((course) => course.id));
 
   const addCourseMutation = useMutation({
     mutationFn: addCourseToUser,

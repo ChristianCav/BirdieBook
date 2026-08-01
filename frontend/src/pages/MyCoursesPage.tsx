@@ -12,7 +12,7 @@ const MyCoursesPage = () => {
     data: myCourses = [],
     isLoading,
     isError,
-  } = useQuery({
+  } = useQuery<Course[]>({
     queryKey: ["myCourses"],
     queryFn: getMyCourses,
   });

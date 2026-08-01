@@ -52,8 +52,23 @@ export async function updateUser(req: Request, res: Response) {
 
 export async function getAllUserRounds(req: Request, res: Response) {
   try {
+    const { userId: authUserId } = getAuth(req);
+    if (!authUserId) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
     const userId = req.params.userId as string;
-    const rounds = await queries.getRoundsByUserId(userId);
+    if (authUserId !== userId) {
+      return res.status(403).json({ error: "Forbidden" });
+    }
+
+    const courseId =
+      typeof req.query.courseId === "string" ? req.query.courseId : undefined;
+
+    const rounds = courseId
+      ? await queries.getRoundsByUserIdAndCourse(userId, courseId)
+      : await queries.getRoundsByUserId(userId);
+
     res.status(200).json(rounds);
   } catch (error) {
     console.error("Error fetching rounds:", error);

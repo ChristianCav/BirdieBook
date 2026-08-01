@@ -1,5 +1,5 @@
 import { db } from "./index";
-import { eq, and } from "drizzle-orm";
+import { eq, and, desc } from "drizzle-orm";
 import { users, rounds, courses, userCourses } from "./schema";
 import type {
   NewUser,
@@ -166,6 +166,16 @@ export const getRoundById = async (id: string) => {
 export const getRoundsByUserId = async (userId: string) => {
   return db.query.rounds.findMany({
     where: eq(rounds.userId, userId),
+  });
+};
+
+export const getRoundsByUserIdAndCourse = async (
+  userId: string,
+  courseId: string,
+) => {
+  return db.query.rounds.findMany({
+    where: and(eq(rounds.userId, userId), eq(rounds.courseId, courseId)),
+    orderBy: [desc(rounds.playedAt)],
   });
 };
 

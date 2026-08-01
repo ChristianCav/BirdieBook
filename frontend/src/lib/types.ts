@@ -6,7 +6,7 @@ export type Course = {
   city: string | null;
   province: string | null;
   country: string | null;
-  holes: unknown;
+  holes: Record<string, Hole[]>;
 };
 
 export type Round = {
@@ -21,4 +21,11 @@ export type Round = {
   playedAt: Date;
   totalScore: number | null;
   notes: string | null;
+};
+
+export type Hole = {
+  holeNumber: number;
+  par: number;
+  handicap?: number;
+  yardage?: number;
 };

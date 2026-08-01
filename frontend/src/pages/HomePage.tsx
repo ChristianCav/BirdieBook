@@ -13,7 +13,7 @@ const HomePage = () => {
     data: rounds = [],
     isLoading,
     isError,
-  } = useQuery({
+  } = useQuery<Round[]>({
     queryKey: ["userRounds", userId],
     queryFn: () => getUserRounds(userId!),
     enabled: !!userId,
@@ -21,7 +21,7 @@ const HomePage = () => {
 
   const recentRounds = useMemo(() => {
     return [...rounds]
-      .sort((a: any, b: any) => {
+      .sort((a: Round, b: Round) => {
         const aDate = new Date(a.playedAt || 0).getTime();
         const bDate = new Date(b.playedAt || 0).getTime();
         return bDate - aDate;
