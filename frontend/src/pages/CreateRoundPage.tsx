@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useLocation, useNavigate } from "react-router";
 import { createRound, getAllCourses } from "../lib/api";
 import { useAuth } from "@clerk/clerk-react";
+import type { Course } from "../lib/types";
 
 interface HoleData {
   holeNumber: number;
@@ -35,7 +36,9 @@ const CreateRoundPage = () => {
     queryFn: getAllCourses,
   });
 
-  const selectedCourse = courses.find((c: any) => c.id === selectedCourseId);
+  const selectedCourse: Course | undefined = courses.find(
+    (c: any) => c.id === selectedCourseId,
+  );
 
   const getTeeColorOptions = (course: any) => {
     if (!course?.holes || typeof course.holes !== "object") {
@@ -139,8 +142,51 @@ const CreateRoundPage = () => {
     }
   }, [location.search]);
 
+  const getScoreCategory = (score: number | undefined, par: number) => {
+    if (typeof score !== "number") return null;
+
+    if (score === 1) return "holeInOnes";
+
+    const difference = score - par;
+
+    if (difference <= -3) return "albatrosses";
+    if (difference === -2) return "eagles";
+    if (difference === -1) return "birdies";
+    if (difference === 0) return "pars";
+    if (difference === 1) return "bogeys";
+    if (difference === 2) return "doubleBogeys";
+    if (difference === 3) return "tripleBogeys";
+    return "quadBogeysOrWorse";
+  };
+
+  const buildScoreBreakdown = (holeEntries: HoleData[]) => {
+    const breakdown = {
+      holeInOnes: 0,
+      birdies: 0,
+      pars: 0,
+      bogeys: 0,
+      doubleBogeys: 0,
+      tripleBogeys: 0,
+      quadBogeysOrWorse: 0,
+      eagles: 0,
+      albatrosses: 0,
+    };
+
+    holeEntries.forEach((hole) => {
+      const category = getScoreCategory(hole.score, hole.par);
+      if (!category) return;
+
+      if (category in breakdown) {
+        breakdown[category as keyof typeof breakdown] += 1;
+      }
+    });
+
+    return breakdown;
+  };
+
   const totalScore = holes.reduce((sum, h) => sum + (h.score || 0), 0);
   const totalPar = holes.reduce((sum, h) => sum + h.par, 0);
+  const scoreBreakdown = buildScoreBreakdown(holes);
 
   const handleScoreChange = (holeNumber: number, field: string, value: any) => {
     setHoles((prevHoles) =>
@@ -163,13 +209,15 @@ const CreateRoundPage = () => {
 
     setIsSubmitting(true);
     try {
-      await createRound({
+      const createdRound = await createRound({
         userId,
         courseId: selectedCourseId,
         courseName: selectedCourse?.name ?? "",
         teeColor: selectedTeeColor,
         playedAt: new Date(`${playedDate}T12:00:00`),
         totalScore: totalScore || null,
+        relativeToPar: totalScore - totalPar,
+        scoreBreakdown,
         notes: "",
         holes: holes
           .filter((h) => typeof h.score === "number")
@@ -189,6 +237,7 @@ const CreateRoundPage = () => {
       setSelectedTeeColor("");
       setHoles([]);
       setPlayedDate(new Date().toISOString().split("T")[0]);
+      navigate(`/rounds/${createdRound.id}`);
     } catch (error) {
       console.error("Error creating round:", error);
       alert("Error creating round. Please try again.");

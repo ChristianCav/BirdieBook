@@ -2,15 +2,7 @@ import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router";
 import { getRoundById } from "../lib/api";
-
-interface RoundHoleData {
-  holeNumber: number;
-  score: number;
-  putts?: number | null;
-  fairwayHit?: boolean | null;
-  greenInRegulation?: boolean | null;
-  penaltyStrokes?: number | null;
-}
+import type { Round, RoundHole } from "../lib/types";
 
 const RoundPage = () => {
   const navigate = useNavigate();
@@ -20,16 +12,14 @@ const RoundPage = () => {
     data: round,
     isLoading,
     isError,
-  } = useQuery({
+  } = useQuery<Round>({
     queryKey: ["round", roundId],
     queryFn: () => getRoundById(roundId!),
     enabled: !!roundId,
   });
 
   const stats = useMemo(() => {
-    const holes: RoundHoleData[] = Array.isArray(round?.holes)
-      ? round.holes
-      : [];
+    const holes: RoundHole[] = Array.isArray(round?.holes) ? round.holes : [];
 
     const totalScore =
       round?.totalScore ??
@@ -51,7 +41,9 @@ const RoundPage = () => {
       fairwaysHit,
       greensInRegulation,
       penalties,
-      averageScore: holes.length ? Math.round(totalScore / holes.length) : 0,
+      averageScore: holes.length
+        ? Number((totalScore / holes.length).toFixed(2))
+        : 0,
     };
   }, [round]);
 
@@ -159,6 +151,58 @@ const RoundPage = () => {
               {stats.penalties}
             </p>
           </div>
+          {!round.scoreBreakdown?.holeInOnes ? null : (
+            <div className="rounded-3xl border border-slate-700 bg-slate-900 p-5">
+              <p className="text-sm text-slate-400">Hole-in-Ones</p>
+              <p className="mt-2 text-3xl font-semibold text-white">
+                {round.scoreBreakdown?.holeInOnes}
+              </p>
+            </div>
+          )}
+          <div className="rounded-3xl border border-slate-700 bg-slate-900 p-5">
+            <p className="text-sm text-slate-400">Eagles</p>
+            <p className="mt-2 text-3xl font-semibold text-white">
+              {round.scoreBreakdown?.eagles}
+            </p>
+          </div>
+          <div className="rounded-3xl border border-slate-700 bg-slate-900 p-5">
+            <p className="text-sm text-slate-400">Birdies</p>
+            <p className="mt-2 text-3xl font-semibold text-white">
+              {round.scoreBreakdown?.birdies}
+            </p>
+          </div>
+          <div className="rounded-3xl border border-slate-700 bg-slate-900 p-5">
+            <p className="text-sm text-slate-400">Pars</p>
+            <p className="mt-2 text-3xl font-semibold text-white">
+              {round.scoreBreakdown?.pars}
+            </p>
+          </div>
+          <div className="rounded-3xl border border-slate-700 bg-slate-900 p-5">
+            <p className="text-sm text-slate-400">Bogeys</p>
+            <p className="mt-2 text-3xl font-semibold text-white">
+              {round.scoreBreakdown?.bogeys}
+            </p>
+          </div>
+          <div className="rounded-3xl border border-slate-700 bg-slate-900 p-5">
+            <p className="text-sm text-slate-400">Double Bogeys</p>
+            <p className="mt-2 text-3xl font-semibold text-white">
+              {round.scoreBreakdown?.doubleBogeys}
+            </p>
+          </div>
+          <div className="rounded-3xl border border-slate-700 bg-slate-900 p-5">
+            <p className="text-sm text-slate-400">Triple Bogeys</p>
+            <p className="mt-2 text-3xl font-semibold text-white">
+              {round.scoreBreakdown?.tripleBogeys}
+            </p>
+          </div>
+          {!round.scoreBreakdown?.quadBogeysOrWorse ? null : (
+            <div className="rounded-3xl border border-slate-700 bg-slate-900 p-5">
+              <p className="text-sm text-slate-400">Quadruple Bogeys+</p>
+              <p className="mt-2 text-3xl font-semibold text-white">
+                {round.scoreBreakdown?.quadBogeysOrWorse}
+              </p>
+            </div>
+          )}
         </div>
 
         <div className="rounded-3xl border border-slate-700 bg-slate-900 p-6">
@@ -183,7 +227,7 @@ const RoundPage = () => {
               </thead>
               <tbody className="divide-y divide-slate-800 bg-slate-950/40">
                 {round.holes?.length ? (
-                  round.holes.map((hole: RoundHoleData) => (
+                  round.holes.map((hole: RoundHole) => (
                     <tr
                       key={hole.holeNumber}
                       className="text-sm text-slate-300"

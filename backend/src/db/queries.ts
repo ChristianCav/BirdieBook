@@ -7,6 +7,7 @@ import type {
   NewCourse,
   CourseHolesByTee,
   RoundHole,
+  RoundScoreBreakdown,
 } from "./schema";
 
 // user queries
@@ -138,7 +139,9 @@ export const createRound = async (data: {
   courseName: string;
   teeColor?: string;
   playedAt: Date | string;
-  totalScore?: number | null;
+  totalScore: number;
+  relativeToPar: number;
+  scoreBreakdown?: RoundScoreBreakdown | null;
   notes?: string;
   holes: RoundHole[];
 }) => {
@@ -150,7 +153,9 @@ export const createRound = async (data: {
       courseName: data.courseName,
       teeColor: data.teeColor || null,
       playedAt: normalizeDate(data.playedAt),
-      totalScore: data.totalScore || null,
+      totalScore: data.totalScore,
+      relativeToPar: data.relativeToPar,
+      scoreBreakdown: data.scoreBreakdown ?? {},
       notes: data.notes || null,
       holes: data.holes,
     })

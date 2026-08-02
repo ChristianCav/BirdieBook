@@ -21,12 +21,12 @@ const HomePage = () => {
 
   const recentRounds = useMemo(() => {
     return [...rounds]
-      .sort((a: Round, b: Round) => {
+      .sort((a: any, b: any) => {
         const aDate = new Date(a.playedAt || 0).getTime();
         const bDate = new Date(b.playedAt || 0).getTime();
         return bDate - aDate;
       })
-      .slice(0, 5);
+      .slice(0, 20);
   }, [rounds]);
 
   const stats = useMemo(() => {
@@ -39,7 +39,7 @@ const HomePage = () => {
       };
     }
 
-    const scores = rounds
+    const scores = recentRounds
       .map((round: Round) => Number(round.totalScore))
       .filter((score: number) => Number.isFinite(score));
 
@@ -51,7 +51,21 @@ const HomePage = () => {
       : 0;
 
     const bestScore = scores.length ? Math.min(...scores) : 0;
-    const handicap = Math.max(0, Math.round((averageScore - 72) / 2));
+
+    const countingHandicapRounds = recentRounds
+      .sort((a: Round, b: Round) => a.relativeToPar - b.relativeToPar)
+      .slice(0, 8);
+
+    const handicap = countingHandicapRounds.length
+      ? Number(
+          (
+            countingHandicapRounds.reduce(
+              (sum, round) => sum + (round.relativeToPar as number),
+              0,
+            ) / countingHandicapRounds.length
+          ).toFixed(2),
+        )
+      : 0;
 
     return {
       roundsPlayed: rounds.length,
@@ -93,7 +107,9 @@ const HomePage = () => {
           <div className="rounded-3xl border border-slate-700 bg-slate-900 p-5">
             <p className="text-sm text-slate-400">Handicap</p>
             <p className="mt-2 text-3xl font-semibold text-white">
-              {stats.handicap}
+              {stats.handicap >= 0
+                ? stats.handicap
+                : `+${Math.abs(stats.handicap)}`}
             </p>
           </div>
         </div>
@@ -101,7 +117,7 @@ const HomePage = () => {
         <div className="rounded-3xl border border-slate-700 bg-slate-900 p-6">
           <div className="mb-4 flex items-center justify-between">
             <h2 className="text-2xl font-semibold text-white">Recent rounds</h2>
-            <span className="text-sm text-slate-400">Latest 5</span>
+            <span className="text-sm text-slate-400">Latest 20</span>
           </div>
           {isError && (
             <div className="rounded-2xl border border-slate-800 bg-slate-950 p-6 text-slate-400">

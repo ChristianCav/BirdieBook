@@ -6,7 +6,7 @@ import useUserSync from "./hooks/useUserSync";
 import ProfilePage from "./pages/ProfilePage";
 import CreateRoundPage from "./pages/CreateRoundPage";
 import CreateCoursePage from "./pages/CreateCoursePage";
-import RoundPage from "./pages/RoundPage";
+import RoundInfoPage from "./pages/RoundInfoPage";
 import AllCoursesPage from "./pages/AllCoursesPage";
 import CourseInfoPage from "./pages/CourseInfoPage";
 import MyCoursesPage from "./pages/MyCoursesPage";
@@ -25,7 +25,7 @@ function App() {
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/rounds/new" element={<CreateRoundPage />} />
           <Route path="/courses/new" element={<CreateCoursePage />} />
-          <Route path="/rounds/:roundId" element={<RoundPage />} />
+          <Route path="/rounds/:roundId" element={<RoundInfoPage />} />
           <Route path="/courses/all" element={<AllCoursesPage />} />
           <Route path="/courses/:courseId" element={<CourseInfoPage />} />
           <Route path="/courses/me" element={<MyCoursesPage />} />

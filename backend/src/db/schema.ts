@@ -45,6 +45,8 @@ export const courses = pgTable("courses", {
     .notNull(),
 });
 
+export type RoundScoreBreakdown = Record<string, number>;
+
 export const rounds = pgTable("rounds", {
   id: uuid("id").primaryKey().defaultRandom(),
 
@@ -67,6 +69,13 @@ export const rounds = pgTable("rounds", {
   holes: jsonb("holes").notNull().default([]),
 
   totalScore: integer("total_score"),
+
+  scoreBreakdown: jsonb("score_breakdown")
+    .$type<RoundScoreBreakdown>()
+    .notNull()
+    .default({}),
+
+  relativeToPar: integer("relative_to_par"),
 
   notes: text("notes"),
 

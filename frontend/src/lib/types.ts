@@ -9,17 +9,40 @@ export type Course = {
   holes: Record<string, Hole[]>;
 };
 
+export type RoundHole = {
+  holeNumber: number;
+  score: number;
+  putts?: number | null;
+  fairwayHit?: boolean | null;
+  greenInRegulation?: boolean | null;
+  penaltyStrokes?: number | null;
+};
+
+export type RoundScoreBreakdown = {
+  holeInOnes?: number;
+  eagles?: number;
+  birdies?: number;
+  pars?: number;
+  bogeys?: number;
+  doubleBogeys?: number;
+  tripleBogeys?: number;
+  quadBogeysOrWorse?: number;
+  albatrosses?: number;
+};
+
 export type Round = {
   id: string;
   createdAt: Date;
   updatedAt: Date;
-  holes: unknown;
+  holes: RoundHole[];
   userId: string;
   courseId: string;
   courseName: string;
   teeColor: string | null;
   playedAt: Date;
   totalScore: number | null;
+  relativeToPar: number | null;
+  scoreBreakdown?: RoundScoreBreakdown | null;
   notes: string | null;
 };
 
