@@ -1,9 +1,16 @@
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router";
-import { getUserRounds } from "../lib/api";
+import { getUserRoundStats, getUserRounds } from "../lib/api";
 import { useAuth } from "@clerk/clerk-react";
 import type { Round } from "../lib/types";
+
+type RoundStatsSummary = {
+  roundsPlayed: number;
+  averageScore: number;
+  bestScore: number;
+  handicap: number;
+};
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -11,11 +18,26 @@ const HomePage = () => {
 
   const {
     data: rounds = [],
-    isLoading,
-    isError,
+    isLoading: isRoundsLoading,
+    isError: isRoundsError,
   } = useQuery<Round[]>({
     queryKey: ["userRounds", userId],
     queryFn: () => getUserRounds(userId!),
+    enabled: !!userId,
+  });
+
+  const {
+    data: stats = {
+      roundsPlayed: 0,
+      averageScore: 0,
+      bestScore: 0,
+      handicap: 0,
+    },
+    isLoading: isStatsLoading,
+    isError: isStatsError,
+  } = useQuery<RoundStatsSummary>({
+    queryKey: ["userRoundStats", userId],
+    queryFn: () => getUserRoundStats(userId!),
     enabled: !!userId,
   });
 
@@ -26,54 +48,11 @@ const HomePage = () => {
         const bDate = new Date(b.playedAt || 0).getTime();
         return bDate - aDate;
       })
-      .slice(0, 20);
+      .slice(0, 10);
   }, [rounds]);
 
-  const stats = useMemo(() => {
-    if (!rounds.length) {
-      return {
-        roundsPlayed: 0,
-        averageScore: 0,
-        bestScore: 0,
-        handicap: 0,
-      };
-    }
-
-    const scores = recentRounds
-      .map((round: Round) => Number(round.totalScore))
-      .filter((score: number) => Number.isFinite(score));
-
-    const averageScore = scores.length
-      ? Math.round(
-          scores.reduce((sum: number, score: number) => sum + score, 0) /
-            scores.length,
-        )
-      : 0;
-
-    const bestScore = scores.length ? Math.min(...scores) : 0;
-
-    const countingHandicapRounds = recentRounds
-      .sort((a: Round, b: Round) => a.relativeToPar - b.relativeToPar)
-      .slice(0, 8);
-
-    const handicap = countingHandicapRounds.length
-      ? Number(
-          (
-            countingHandicapRounds.reduce(
-              (sum, round) => sum + (round.relativeToPar as number),
-              0,
-            ) / countingHandicapRounds.length
-          ).toFixed(2),
-        )
-      : 0;
-
-    return {
-      roundsPlayed: rounds.length,
-      averageScore,
-      bestScore,
-      handicap,
-    };
-  }, [rounds]);
+  const isLoading = isRoundsLoading || isStatsLoading;
+  const isError = isRoundsError || isStatsError;
 
   return (
     <div className="min-h-screen bg-slate-950 p-6 text-slate-100">

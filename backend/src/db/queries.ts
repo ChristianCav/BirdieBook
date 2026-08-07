@@ -1,6 +1,7 @@
-import { db } from "./index";
+import { db } from "./index.js";
 import { eq, and, desc } from "drizzle-orm";
-import { users, rounds, courses, userCourses } from "./schema";
+import { users, rounds, courses, userCourses } from "./schema.js";
+import { calculateUserRoundStats } from "../lib/roundStats.js";
 import type {
   NewUser,
   NewRound,
@@ -8,7 +9,7 @@ import type {
   CourseHolesByTee,
   RoundHole,
   RoundScoreBreakdown,
-} from "./schema";
+} from "./schema.js";
 
 // user queries
 
@@ -182,6 +183,14 @@ export const getRoundsByUserIdAndCourse = async (
     where: and(eq(rounds.userId, userId), eq(rounds.courseId, courseId)),
     orderBy: [desc(rounds.playedAt)],
   });
+};
+
+export const getUserRoundStats = async (userId: string) => {
+  const userRounds = await db.query.rounds.findMany({
+    where: eq(rounds.userId, userId),
+  });
+
+  return calculateUserRoundStats(userRounds);
 };
 
 export const updateRound = async (id: string, data: Partial<NewRound>) => {

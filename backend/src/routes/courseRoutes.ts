@@ -8,7 +8,7 @@ import {
   deleteCourse,
   addCourseToMyCourses,
   removeCourseFromMyCourses,
-} from "../controllers/courseController";
+} from "../controllers/courseController.js";
 
 const router = Router();
 

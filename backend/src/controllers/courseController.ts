@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
 import { getAuth } from "@clerk/express";
-import * as queries from "../db/queries";
-import { Course } from "../db/schema";
+import * as queries from "../db/queries.js";
+import { Course } from "../db/schema.js";
 
 export async function getAllCourses(req: Request, res: Response) {
   try {

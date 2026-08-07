@@ -21,6 +21,11 @@ export const getUserRounds = async (userId: string) => {
   return data;
 };
 
+export const getUserRoundStats = async (userId: string) => {
+  const { data } = await api.get(`/users/${userId}/stats`);
+  return data;
+};
+
 export const getUserRoundsByCourse = async (
   userId: string,
   courseId: string,

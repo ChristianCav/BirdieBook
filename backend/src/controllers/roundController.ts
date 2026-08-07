@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
-import * as queries from "../db/queries";
-import { Round } from "../db/schema";
+import * as queries from "../db/queries.js";
+import { Round } from "../db/schema.js";
 
 // Round Controllers
 

@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
-import * as queries from "../db/queries";
-import { User } from "../db/schema";
+import * as queries from "../db/queries.js";
+import { User } from "../db/schema.js";
 
 import { getAuth } from "@clerk/express";
 
@@ -73,5 +73,25 @@ export async function getAllUserRounds(req: Request, res: Response) {
   } catch (error) {
     console.error("Error fetching rounds:", error);
     res.status(500).json({ error: "Failed to fetch rounds" });
+  }
+}
+
+export async function getUserRoundStats(req: Request, res: Response) {
+  try {
+    const { userId: authUserId } = getAuth(req);
+    if (!authUserId) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+
+    const userId = req.params.userId as string;
+    if (authUserId !== userId) {
+      return res.status(403).json({ error: "Forbidden" });
+    }
+
+    const stats = await queries.getUserRoundStats(userId);
+    res.status(200).json(stats);
+  } catch (error) {
+    console.error("Error fetching round stats:", error);
+    res.status(500).json({ error: "Failed to fetch round stats" });
   }
 }

@@ -1,11 +1,11 @@
 import express from "express";
 import cors from "cors";
 
-import { ENV } from "./config/env";
+import { ENV } from "./config/env.js";
 import { clerkMiddleware } from "@clerk/express";
-import roundRoutes from "./routes/roundRoutes";
-import courseRoutes from "./routes/courseRoutes";
-import userRoutes from "./routes/userRoutes";
+import roundRoutes from "./routes/roundRoutes.js";
+import courseRoutes from "./routes/courseRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
 
 const app = express();
 

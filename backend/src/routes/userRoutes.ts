@@ -4,13 +4,15 @@ import {
   getUserById,
   updateUser,
   getAllUserRounds,
-} from "../controllers/userController";
+  getUserRoundStats,
+} from "../controllers/userController.js";
 import { requireAuth } from "@clerk/express";
 
 const router = Router();
 
 router.post("/sync", requireAuth(), syncUser);
 router.get("/:userId", getUserById);
+router.get("/:userId/stats", getUserRoundStats);
 router.put("/:userId", updateUser);
 router.get("/:userId/rounds", getAllUserRounds);
 
