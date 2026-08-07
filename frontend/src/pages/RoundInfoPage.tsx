@@ -1,7 +1,8 @@
 import { useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useNavigate, useParams } from "react-router";
+import { Link, useNavigate, useParams } from "react-router";
 import { getRoundById } from "../lib/api";
+import { TrashIcon, PencilIcon } from "lucide-react";
 import type { Round, RoundHole } from "../lib/types";
 
 const RoundPage = () => {
@@ -92,6 +93,16 @@ const RoundPage = () => {
           >
             ← Back to overview
           </button>
+          <div className="rounded-2xl border border-emerald-700/40 bg-emerald-600/10 px-4 py-3 text-right">
+            <Link>
+              <TrashIcon className="size-4 text-rose-400 transition hover:text-rose-300" />
+            </Link>
+          </div>
+          <div className="rounded-2xl border border-emerald-700/40 bg-emerald-600/10 px-4 py-3 text-right">
+            <Link>
+              <PencilIcon className="size-4 text-emerald-400 transition hover:text-emerald-300" />
+            </Link>
+          </div>
           <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
             <div>
               <p className="text-sm uppercase tracking-[0.2em] text-slate-400">
